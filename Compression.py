@@ -5,6 +5,8 @@ class Cage:
     def __init__(self):
         self.Items = np.array()
 
+# take grid 20x20 return 10x10
+
 
 def compression(grid):
     grid_size = (len(grid[0]), len(grid))

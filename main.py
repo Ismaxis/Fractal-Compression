@@ -2,52 +2,41 @@ import pygame as pg
 from PIL import Image
 import numpy as np
 from Draw import draw
-from Gridding import gridding
+from Gridding import gridding, creating_img, white_noise
 from Compression import compression
-from Compare import compare
+from Instruction import create_instr
 
 
 image = Image.open("images\woman.png")
 image = image.convert('L')
 
-data = np.asarray(image)
+start_data = np.asarray(image)
 
-WIN_SIZE = (len(data[0]), len(data))
+WIN_SIZE = (len(start_data[0]), len(start_data))
 WIN = pg.display.set_mode(WIN_SIZE)
 
-small_grid = gridding(data, (10, 10))
-big_grid = gridding(data, (20, 20))
+# first cycle with creating instruction for recovery
+small_grid = gridding(start_data, (10, 10))
+big_grid = compression(gridding(start_data, (20, 20)))
 
-big_grid = compression(big_grid)
+instruction = create_instr(small_grid, big_grid)
 
-instruction = compare(small_grid, big_grid)
+img = white_noise(WIN_SIZE)
 
-# checking
-data2 = np.zeros(WIN_SIZE)
+# recovery cycles
+for i in range(100):
+    big_grid = compression(gridding(img, (20, 20)))
 
-'''
-for k in range(len(big_grid[0])):
-    for l in range(len(big_grid)):
-        cage = big_grid[k, l]
-        for i in range(len(cage[0])):
-            for j in range(len(cage)):
-                data2[k*10+i, l*10+j] = cage[i, j]
-'''
+    img = creating_img(instruction, big_grid, WIN_SIZE)
 
-for k in range(len(instruction[0])):
-    for l in range(len(instruction)):
-        cage = big_grid[int(instruction[k, l, 0]), int(instruction[k, l, 1])]
-        for i in range(len(cage[0])):
-            for j in range(len(cage)):
-                data2[k*10+i, l*10+j] = cage[i, j]
+    print(f'{i} iteration')
+    draw(WIN, img)
 
-draw(WIN, data2)
+image = Image.fromarray(img)
 
-img = Image.fromarray(data2)
+image = image.convert('RGB')
 
-img = img.convert('RGB')
-
-img.save("result.png")
+image.save("result.png")
 
 while True:
     for event in pg.event.get():
