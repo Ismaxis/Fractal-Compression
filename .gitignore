@@ -1,6 +1,5 @@
-/.vscode
+.vscode
 result.png
-/images
+images
 notes.txt
 __pycache__
-__pycache__/Compare.cpython-39.pyc
