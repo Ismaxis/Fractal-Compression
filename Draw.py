@@ -7,7 +7,7 @@ def draw(win, image):
 
     for j in range(size[1]):
         for i in range(size[0]):
-            color = [image[j, i]] * 3
+            color = [int(image[j, i])] * 3
             pg.draw.line(win, color, (i, j), (i, j))
 
     pg.display.update()
