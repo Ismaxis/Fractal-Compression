@@ -28,7 +28,7 @@ draw(WIN, img)
 instruction = create_instr(small_grid, big_grid, SQUARES_SIZE)
 
 # recovery cycles
-for i in range(20):
+for i in range(7):
     big_grid = compression(gridding(img, SQUARES_SIZE * 2), 2)
 
     img = creating_img(instruction, big_grid, WIN_SIZE, SQUARES_SIZE)
