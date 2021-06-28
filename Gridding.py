@@ -1,4 +1,5 @@
 import numpy as np
+from numpy.core.numeric import outer
 
 
 class Cage:
@@ -19,7 +20,7 @@ def gridding(image, squares_size):
     return output
 
 
-def creating_img(instruction, deviations, big_grid, WIN_SIZE, squares_size):
+def creating_img(instruction, big_grid, WIN_SIZE, squares_size):
     data = np.zeros(WIN_SIZE)
     for k in range(len(instruction[0])):
         for l in range(len(instruction)):
@@ -28,8 +29,7 @@ def creating_img(instruction, deviations, big_grid, WIN_SIZE, squares_size):
 
             for i in range(len(cage[0])):
                 for j in range(len(cage)):
-                    #color = cage[i, j] - deviations[k][l]
-                    color = cage[i, j] - deviations[k][l][i][j]
+                    color = cage[i, j] * instruction[k, l, 2]
 
                     if color < 0:
                         color = 0
@@ -39,6 +39,20 @@ def creating_img(instruction, deviations, big_grid, WIN_SIZE, squares_size):
 
                     data[k*squares_size+i, l*squares_size+j] = color
     return data
+
+
+def upscale(image, size):
+    output = np.zeros((500, 500))
+    for i in range(len(image)):
+        for j in range(len(image)):
+            color = image[i, j]
+            color = color[0][0]
+            for k in range(size//len(image)):
+                for l in range(size//len(image)):
+                    output[i*size//len(image) + k][j*size //
+                                                   len(image) + l] = int(color)
+
+    return output
 
 
 def white_noise(WIN_SIZE):

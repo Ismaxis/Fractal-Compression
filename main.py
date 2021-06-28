@@ -2,7 +2,7 @@ import pygame as pg
 from PIL import Image
 import numpy as np
 from Draw import draw
-from Gridding import gridding, creating_img, white_noise
+from Gridding import gridding, creating_img, upscale, white_noise, upscale
 from Compression import compression
 from Instruction import create_instr
 
@@ -18,20 +18,23 @@ SQUARES_SIZE = 10
 
 # first cycle with creating instruction for recovery
 small_grid = gridding(start_data, SQUARES_SIZE)
-big_grid = compression(gridding(start_data, SQUARES_SIZE * 2))
+big_grid = compression(gridding(start_data, SQUARES_SIZE * 2), 2)
 
-instruction, deviations = create_instr(small_grid, big_grid, SQUARES_SIZE)
-
+#img = compression(small_grid, 10)
+#img = upscale(img, 500)
 img = white_noise(WIN_SIZE)
+draw(WIN, img)
+
+instruction = create_instr(small_grid, big_grid, SQUARES_SIZE)
 
 # recovery cycles
-for i in range(50):
-    big_grid = compression(gridding(img, SQUARES_SIZE * 2))
+for i in range(20):
+    big_grid = compression(gridding(img, SQUARES_SIZE * 2), 2)
 
-    img = creating_img(instruction, deviations,
-                       big_grid, WIN_SIZE, SQUARES_SIZE)
+    img = creating_img(instruction, big_grid, WIN_SIZE, SQUARES_SIZE)
 
-    print(f'{i} iteration')
+    print(f'{i + 1} iteration')
+
     draw(WIN, img)
 
 image = Image.fromarray(img)
