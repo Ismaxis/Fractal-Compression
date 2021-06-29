@@ -1,8 +1,8 @@
-import pygame as pg
+#import pygame as pg
 from PIL import Image
 import numpy as np
-from Draw import draw
-from Gridding import gridding, creating_img, upscale, white_noise, upscale
+#from Draw import draw
+from Gridding import gridding, creating_img, white_noise  # , upscale
 from Compression import compression
 from Instruction import create_instr
 
@@ -13,7 +13,7 @@ image = image.convert('L')
 start_data = np.asarray(image)
 
 WIN_SIZE = (len(start_data[0]), len(start_data))
-WIN = pg.display.set_mode(WIN_SIZE)
+#WIN = pg.display.set_mode(WIN_SIZE)
 SQUARES_SIZE = 10
 
 # first cycle with creating instruction for recovery
@@ -23,7 +23,7 @@ big_grid = compression(gridding(start_data, SQUARES_SIZE * 2), 2)
 #img = compression(small_grid, 10)
 #img = upscale(img, 500)
 img = white_noise(WIN_SIZE)
-draw(WIN, img)
+#draw(WIN, img)
 
 instruction = create_instr(small_grid, big_grid, SQUARES_SIZE)
 
@@ -35,7 +35,7 @@ for i in range(7):
 
     print(f'{i + 1} iteration')
 
-    draw(WIN, img)
+    #draw(WIN, img)
 
 image = Image.fromarray(img)
 
@@ -43,8 +43,11 @@ image = image.convert('RGB')
 
 image.save("result.png")
 
+quit()
+'''
 while True:
     for event in pg.event.get():
         if event.type == pg.QUIT:
             pg.quit()
             quit()
+'''
