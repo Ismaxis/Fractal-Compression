@@ -8,8 +8,7 @@ from Gridding import gridding
 @jit(nopython=True)
 def create_instr(start_data, squares_size):
     main_grid = gridding(start_data, squares_size)
-    big_grid = gridding(start_data, squares_size * 2)
-    comp_grid = compression(big_grid, 2)
+    comp_grid = compression(gridding(start_data, squares_size * 2), 2)
 
     main_size = len(main_grid)
     comp_size = main_size // 2
