@@ -21,12 +21,14 @@ SQUARES_SIZE = 5
 instruction, deviations = create_instr(start_data, SQUARES_SIZE)
 
 # recovery
-recovered = np.random.randint(0, 255, (WIN_SIZE, WIN_SIZE))
+RECOVERY_SIZE = 500
+recovered = np.random.randint(0, 255, (RECOVERY_SIZE, RECOVERY_SIZE))
 
-for i in range(15):
-    big_grid = compression(gridding(recovered, SQUARES_SIZE * 2), 2)
+for i in range(10):
+    big_grid = compression(
+        gridding(recovered, SQUARES_SIZE * 2 * RECOVERY_SIZE//WIN_SIZE), 2)
 
     recovered = recovery(instruction, deviations,
-                         big_grid, WIN_SIZE, SQUARES_SIZE)
+                         big_grid, RECOVERY_SIZE, SQUARES_SIZE * RECOVERY_SIZE//WIN_SIZE)
 
 Image.fromarray(recovered).convert('RGB').save("result.png")
