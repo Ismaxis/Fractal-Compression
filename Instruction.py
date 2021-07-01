@@ -1,29 +1,41 @@
 import numpy as np
+from numba import jit
+
+from Compression import compression
+from Gridding import gridding
 
 
-def create_instr(main_grid, comp_grid, squares_size):
+@jit(nopython=True)
+def create_instr(start_data, squares_size):
+    main_grid = gridding(start_data, squares_size)
+    big_grid = gridding(start_data, squares_size * 2)
+    comp_grid = compression(big_grid, 2)
+
     main_size = len(main_grid)
     comp_size = main_size // 2
 
-    instruction = np.zeros((main_size, main_size, 3))
+    instruction = np.zeros((main_size, main_size, 2), dtype=np.uint8)
+    deviations = np.zeros((main_size, main_size), dtype=np.float32)
 
     # loop through main grid
     for i in range(main_size):
         for j in range(main_size):
-            cur_main_cage = main_grid[i, j]
             min_error = 100000
+
             # loop through comp grid
             for k in range(comp_size):
                 for l in range(comp_size):
-                    prop = np.average(cur_main_cage) / \
-                        np.average(comp_grid[k, l])
+                    prop = main_grid[i, j].mean() / \
+                        (comp_grid[k, l].mean() + 1)
 
-                    deviation = comp_grid[k, l] * prop - cur_main_cage
+                    cur_deviation = comp_grid[k, l] * prop - main_grid[i, j]
 
-                    error = np.sum(deviation**2)
+                    error = np.sum(cur_deviation**2)
 
                     if error < min_error:
                         min_error = error
-                        instruction[i, j] = np.array([k, l, prop])
+                        instruction[i, j, 0] = k
+                        instruction[i, j, 1] = l
+                        deviations[i, j] = prop
 
-    return instruction
+    return instruction, deviations

@@ -1,31 +1,27 @@
+from numba.np.ufunc import parallel
 import numpy as np
+from numba import jit
 
 
-class Cage:
-    def __init__(self):
-        self.Items = np.array()
-
-
-# take grid 20x20 return 10x10
+# take grid nxn return (n/k)x(n/k)
+@jit(nopython=True)
 def compression(grid, k):
-    grid_size = (len(grid[0]), len(grid))
-    ingrid_size = (len(grid[0, 0][0]), len(grid[0, 0]))
-    output = np.zeros(grid_size, dtype=Cage)
+    grid_size = len(grid)
+    ingrid_size = len(grid[0, 0])
+    ingd_size_dev = ingrid_size // k
+    output = np.zeros((grid_size, grid_size, ingrid_size//2,
+                      ingrid_size//2), dtype=np.uint8)
 
-    for grid_i in range(0, grid_size[0]):
-        for grid_j in range(0, grid_size[1]):
-            cur_cage = grid[grid_i, grid_j]
-            new_cage = np.zeros((ingrid_size[0]//k, ingrid_size[1]//k))
-            for i in range(0, ingrid_size[0]//k):
-                for j in range(0, ingrid_size[1]//k):
+    for grid_i in range(grid_size):
+        for grid_j in range(grid_size):
+            for i in range(ingd_size_dev):
+                for j in range(ingd_size_dev):
                     new_color = 0
                     for hpixel in range(k):
                         for vpixel in range(k):
-                            new_color += cur_cage[i *
-                                                  k + hpixel, j * k + vpixel]
+                            new_color += \
+                                grid[grid_i, grid_j][i*k + hpixel, j*k + vpixel]
                     new_color = new_color / k**2
-                    new_cage[i, j] = int(new_color)
-
-            output[grid_i, grid_j] = new_cage
+                    output[grid_i, grid_j, i, j] = int(new_color)
 
     return output
