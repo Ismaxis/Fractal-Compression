@@ -8,10 +8,11 @@ from Recovery import recovery
 
 
 # import image
-image = Image.open("images\woman.png")
+image = Image.open("images\\svt.png")
 image = image.convert('L')
 
 start_data = np.asarray(image)
+del image
 
 # global variables
 WIN_SIZE = len(start_data)
@@ -19,10 +20,11 @@ SQUARES_SIZE = 5
 
 # compression
 instruction, deviations = create_instr(start_data, SQUARES_SIZE)
+del start_data
 
 # recovery
-RECOVERY_SIZE = 500
-recovered = np.random.randint(0, 255, (RECOVERY_SIZE, RECOVERY_SIZE))
+RECOVERY_SIZE = WIN_SIZE * 2
+recovered = np.asarray(Image.open("images\white.png").convert('L'))
 
 for i in range(10):
     big_grid = compression(

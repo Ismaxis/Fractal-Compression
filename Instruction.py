@@ -6,7 +6,7 @@ from Gridding import gridding
 
 
 @jit(nopython=True)
-def create_instr(start_data, squares_size):
+def create_instr(start_data: np.array, squares_size: int) -> np.array:
     main_grid = gridding(start_data, squares_size)
     comp_grid = compression(gridding(start_data, squares_size * 2), 2)
 
