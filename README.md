@@ -2,5 +2,4 @@
 Fractal Compression Algorithm Implementation  
 
 
-https://user-images.githubusercontent.com/83420512/204835025-c99779b8-eb90-4a77-a92f-686c986e3232.mp4
-
+![Fractal-Compression DEMO](https://user-images.githubusercontent.com/83420512/204835838-9ac25a8a-498d-4ab2-9abf-78561ed5877a.gif)
